@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API テスター</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f5f7fa;
+      color: #1a1a2e;
+      min-height: 100vh;
+      padding: 32px 16px;
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      color: #666;
+      font-size: 0.9rem;
+      margin-bottom: 32px;
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    /* ---- エンドポイントカード ---- */
+    .endpoint-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      border-bottom: 1px solid #e2e8f0;
+      background: #fafbfc;
+    }
+
+    .method-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 6px;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+    .method-get    { background: #dcfce7; color: #166534; }
+    .method-post   { background: #dbeafe; color: #1e40af; }
+    .method-put    { background: #fef9c3; color: #854d0e; }
+    .method-delete { background: #fee2e2; color: #991b1b; }
+
+    .path {
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 0.95rem;
+      font-weight: 600;
+      flex: 1;
+    }
+    .description {
+      font-size: 0.8rem;
+      color: #888;
+    }
+
+    .card-body {
+      padding: 16px 20px;
+    }
+
+    /* ---- URL 入力欄 ---- */
+    .url-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .url-input {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 0.85rem;
+      color: #334155;
+      background: #f8fafc;
+    }
+    .url-input:focus {
+      outline: 2px solid #6366f1;
+      outline-offset: -1px;
+    }
+
+    /* ---- 送信ボタン ---- */
+    .send-btn {
+      padding: 8px 20px;
+      border: none;
+      border-radius: 8px;
+      background: #6366f1;
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .15s, transform .1s;
+      white-space: nowrap;
+    }
+    .send-btn:hover  { background: #4f46e5; }
+    .send-btn:active { transform: scale(.97); }
+    .send-btn:disabled { background: #a5b4fc; cursor: not-allowed; }
+
+    /* ---- レスポンス表示 ---- */
+    .response-box {
+      display: none;
+      margin-top: 12px;
+    }
+    .response-box.visible { display: block; }
+
+    .status-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-size: 0.82rem;
+      color: #555;
+    }
+    .status-code {
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 5px;
+    }
+    .status-2xx { background: #dcfce7; color: #166534; }
+    .status-4xx { background: #fee2e2; color: #991b1b; }
+    .status-5xx { background: #fef3c7; color: #92400e; }
+    .status-err { background: #f1f5f9; color: #475569; }
+
+    .response-body {
+      background: #1e1e2e;
+      color: #cdd6f4;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 0.82rem;
+      line-height: 1.6;
+      padding: 14px 16px;
+      border-radius: 8px;
+      white-space: pre-wrap;
+      word-break: break-all;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    /* シンタックスハイライト（JSON） */
+    .json-key    { color: #89b4fa; }
+    .json-string { color: #a6e3a1; }
+    .json-number { color: #fab387; }
+    .json-bool   { color: #cba6f7; }
+    .json-null   { color: #f38ba8; }
+
+    /* ---- ローディング ---- */
+    .spinner {
+      display: inline-block;
+      width: 14px; height: 14px;
+      border: 2px solid #c7d2fe;
+      border-top-color: #6366f1;
+      border-radius: 50%;
+      animation: spin .6s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>API テスター</h1>
+  <p class="subtitle">ボタンを押してAPIリクエストを送信し、レスポンスを確認できます。</p>
+
+  <!-- /hello エンドポイント -->
+  <div class="endpoint-card">
+    <div class="card-header">
+      <span class="method-badge method-get">GET</span>
+      <span class="path">/hello</span>
+      <span class="description">Hello World メッセージを返します</span>
+    </div>
+    <div class="card-body">
+      <div class="url-row">
+        <input
+          class="url-input"
+          id="url-hello"
+          type="text"
+          value="http://localhost:8080/hello"
+          spellcheck="false"
+        />
+        <button class="send-btn" onclick="sendRequest('hello', 'GET')">送信</button>
+      </div>
+      <div class="response-box" id="response-hello">
+        <div class="status-line" id="status-hello"></div>
+        <div class="response-body" id="body-hello"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  async function sendRequest(id, method) {
+    const urlInput  = document.getElementById('url-' + id);
+    const statusEl  = document.getElementById('status-' + id);
+    const bodyEl    = document.getElementById('body-' + id);
+    const responseBox = document.getElementById('response-' + id);
+    const btn = urlInput.closest('.card-body').querySelector('.send-btn');
+
+    const url = urlInput.value.trim();
+    if (!url) return;
+
+    // ローディング表示
+    btn.disabled = true;
+    statusEl.innerHTML = '<span class="spinner"></span> リクエスト送信中…';
+    bodyEl.textContent = '';
+    responseBox.classList.add('visible');
+
+    try {
+      const startTime = performance.now();
+      const res = await fetch(url, { method });
+      const elapsed = Math.round(performance.now() - startTime);
+      const text = await res.text();
+
+      // ステータス表示
+      const cls = res.status < 300 ? 'status-2xx'
+                : res.status < 500 ? 'status-4xx' : 'status-5xx';
+      statusEl.innerHTML =
+        `<span class="status-code ${cls}">${res.status} ${res.statusText}</span>`
+        + `<span>${elapsed} ms</span>`;
+
+      // ボディ表示（JSON なら整形＋ハイライト）
+      bodyEl.innerHTML = formatBody(text, res.headers.get('content-type') || '');
+    } catch (err) {
+      statusEl.innerHTML =
+        '<span class="status-code status-err">エラー</span>'
+        + `<span>${err.message}</span>`;
+      bodyEl.textContent = 'サーバーに接続できませんでした。\n'
+        + 'go run 07_api_hello_world/main.go でサーバーを起動してください。';
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  function formatBody(text, contentType) {
+    if (!contentType.includes('json')) {
+      return escapeHtml(text);
+    }
+    try {
+      const obj = JSON.parse(text);
+      return syntaxHighlight(JSON.stringify(obj, null, 2));
+    } catch {
+      return escapeHtml(text);
+    }
+  }
+
+  function escapeHtml(str) {
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
+  function syntaxHighlight(json) {
+    return escapeHtml(json).replace(
+      /("(\\u[\dA-Fa-f]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
+      match => {
+        if (/^"/.test(match)) {
+          return /:$/.test(match)
+            ? `<span class="json-key">${match}</span>`
+            : `<span class="json-string">${match}</span>`;
+        }
+        if (/true|false/.test(match)) return `<span class="json-bool">${match}</span>`;
+        if (/null/.test(match))       return `<span class="json-null">${match}</span>`;
+        return `<span class="json-number">${match}</span>`;
+      }
+    );
+  }
+</script>
+</body>
+</html>
