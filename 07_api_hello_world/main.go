@@ -37,10 +37,10 @@ func main() {
 	// corsMiddleware でラップすることで、ブラウザからの直接アクセスが可能になります
 	http.HandleFunc("/hello", corsMiddleware(helloHandler))
 
-	fmt.Println("サーバーを起動しました: http://localhost:8080")
-	fmt.Println("試してみよう: curl http://localhost:8080/hello")
+	fmt.Println("サーバーを起動しました: http://localhost:8888")
+	fmt.Println("試してみよう: curl http://localhost:8888/hello")
 	fmt.Println("フロントエンド: 07_api_hello_world/index.html をブラウザで開いてください")
 
 	// ポート8080でHTTPサーバーを起動する（Ctrl+C で停止）
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":8888", nil)
 }
