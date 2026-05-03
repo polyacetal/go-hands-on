@@ -1,0 +1,1205 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Go ハンズオン - プログラミング入門</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/solarized.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/monokai.css">
+  <style>
+    .reveal h1, .reveal h2, .reveal h3 { text-transform: none; }
+    .reveal h3 { margin-bottom: 0.3em; }
+    .reveal pre { font-size: 0.58em; width: 100%; line-height: 1.35; }
+    .reveal pre code { padding: 0.6em 0.8em; }
+    .reveal code { font-family: 'Fira Code', 'Consolas', monospace; }
+    .reveal p { margin: 0.3em 0; }
+    .reveal .slides section { text-align: left; }
+    .reveal .slides section.center-content { text-align: center; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1em; }
+    .two-col-wide { display: grid; grid-template-columns: 1fr 2fr; gap: 1em; }
+    .tag {
+      display: inline-block;
+      padding: 0.1em 0.5em;
+      border-radius: 4px;
+      font-size: 0.6em;
+      font-weight: bold;
+      vertical-align: middle;
+      margin-right: 0.3em;
+    }
+    .tag-part { background: #268bd2; color: white; }
+    .tag-hands { background: #2aa198; color: white; }
+    .tag-git  { background: #f4741b; color: white; }
+    .step-box {
+      border: 2px solid #268bd2;
+      border-radius: 8px;
+      padding: 0.25em 0.8em;
+      margin: 0.2em 0;
+      font-size: 0.8em;
+    }
+    .warn-box {
+      border: 2px solid #dc322f;
+      border-radius: 8px;
+      padding: 0.25em 0.8em;
+      margin: 0.2em 0;
+      font-size: 0.8em;
+      background: rgba(220,50,47,0.05);
+    }
+    .good { color: #2aa198; font-weight: bold; }
+    .bad  { color: #dc322f; font-weight: bold; }
+    .label {
+      font-size: 0.55em;
+      font-weight: bold;
+      color: #657b83;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      display: block;
+      margin-bottom: 0.2em;
+    }
+  </style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- ============================================================ -->
+<!-- Title                                                         -->
+<!-- ============================================================ -->
+<section class="center-content" style="text-align:center">
+  <h1 style="font-size:2em">Go ハンズオン</h1>
+  <h3 style="color:#657b83">プログラミング入門 &amp; Web API 開発</h3>
+  <br>
+  <p style="font-size:0.8em; color:#657b83">対象: プログラミング未経験者</p>
+</section>
+
+<!-- ============================================================ -->
+<!-- Agenda                                                         -->
+<!-- ============================================================ -->
+<section>
+  <h2>今日のアジェンダ</h2>
+  <table style="font-size:0.75em; width:100%">
+    <thead>
+      <tr><th>時間</th><th>内容</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>午前 0:00</td><td><span class="tag tag-part">1</span> プログラミングの基礎概念（逐次・分岐・ループ）</td></tr>
+      <tr><td>午前 0:45</td><td><span class="tag tag-part">2</span> プログラミングで気にすること（データ・関数・命名）</td></tr>
+      <tr><td>午前 1:15</td><td><span class="tag tag-git">3</span> Git の基礎とブランチ戦略</td></tr>
+      <tr><td>午前 2:00</td><td><span class="tag tag-part">4</span> Go 言語の基礎構文</td></tr>
+      <tr><td>昼休み</td><td>—</td></tr>
+      <tr><td>午後</td><td><span class="tag tag-hands">5</span> ハンズオン演習 01 〜 07</td></tr>
+      <tr><td>午後 終</td><td><span class="tag tag-part">6</span> まとめ・次のステップ</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============================================================ -->
+<!-- Part 0: 環境確認                                              -->
+<!-- ============================================================ -->
+<section>
+  <h2>はじめに: 環境確認</h2>
+  <p>以下のコマンドを端末（ターミナル）で実行してみましょう。</p>
+  <pre><code class="language-bash">go version
+# go version go1.24.x darwin/amd64 のように表示されれば OK</code></pre>
+  <br>
+  <div class="step-box">
+    <strong>手元に用意するもの</strong>
+    <ul>
+      <li>ターミナル（macOS: Terminal / Windows: PowerShell）</li>
+      <li>テキストエディタ（VS Code 推奨）</li>
+      <li>このリポジトリのクローン</li>
+    </ul>
+  </div>
+  <pre><code class="language-bash">git clone https://github.com/polyacetal/go-hands-on
+cd go-hands-on</code></pre>
+</section>
+
+<!-- ============================================================ -->
+<!-- Part 1: プログラミングの基礎概念                              -->
+<!-- ============================================================ -->
+<section>
+  <section class="center-content" style="text-align:center">
+    <span class="tag tag-part" style="font-size:1em">Part 1</span>
+    <h2>プログラミングの<br>基礎概念</h2>
+    <p style="color:#657b83">コードを書く前に「考え方」を学ぶ</p>
+  </section>
+
+  <!-- 1-1 プログラムとは -->
+  <section>
+    <h3>プログラムとは何か</h3>
+    <p>コンピュータへの<strong>命令の羅列</strong>です。</p>
+    <div class="two-col">
+      <div>
+        <span class="label">人間の指示</span>
+        <ol style="font-size:0.75em">
+          <li>冷蔵庫を開ける</li>
+          <li>卵を取り出す</li>
+          <li>フライパンを熱する</li>
+          <li>卵を割って入れる</li>
+          <li>焼けたら皿に盛る</li>
+        </ol>
+      </div>
+      <div>
+        <span class="label">プログラム</span>
+        <ol style="font-size:0.75em">
+          <li>ファイルを開く</li>
+          <li>1 行ずつ読む</li>
+          <li>文字を数える</li>
+          <li>結果を画面に出す</li>
+          <li>ファイルを閉じる</li>
+        </ol>
+      </div>
+    </div>
+    <br>
+    <p style="font-size:0.8em; color:#657b83">
+      コンピュータは指示された通りにしか動きません。<br>
+      プログラマの仕事は「正確な指示を書くこと」です。
+    </p>
+  </section>
+
+  <!-- 1-2 逐次処理 -->
+  <section>
+    <h3>1-1 逐次処理 (Sequential)</h3>
+    <p>コンピュータは命令を<strong>上から順番に</strong>実行します。</p>
+    <div class="two-col">
+      <div>
+        <span class="label">擬似コード</span>
+        <pre><code class="language-plaintext">PRINT "起動しました"
+PRINT "処理を開始します"
+PRINT "完了しました"</code></pre>
+      </div>
+      <div>
+        <span class="label">出力</span>
+        <pre><code class="language-plaintext">起動しました
+処理を開始します
+完了しました</code></pre>
+      </div>
+    </div>
+    <br>
+    <div class="step-box">
+      <strong>ポイント</strong>: 順番を変えると結果も変わる。<br>
+      コンピュータは「前後の文脈」を自動では判断しません。
+    </div>
+  </section>
+
+  <!-- 1-3 分岐処理 -->
+  <section>
+    <h3>1-2 分岐処理 (Branching)</h3>
+    <p>条件によって<strong>実行するコードを切り替える</strong>ことができます。</p>
+    <div class="two-col">
+      <div>
+        <span class="label">擬似コード</span>
+        <pre><code class="language-plaintext">IF weather == "sunny" THEN
+    PRINT "外に出かけよう"
+ELSE
+    PRINT "家にいよう"
+END IF</code></pre>
+      </div>
+      <div>
+        <span class="label">複数分岐</span>
+        <pre><code class="language-plaintext">IF score >= 90 THEN
+    PRINT "A"
+ELSE IF score >= 70 THEN
+    PRINT "B"
+ELSE
+    PRINT "C"
+END IF</code></pre>
+      </div>
+    </div>
+    <br>
+    <p style="font-size:0.8em">
+      <code>IF</code> = もし 〜 ならば<br>
+      <code>ELSE IF</code> = そうでなく 〜 ならば<br>
+      <code>ELSE</code> = それ以外
+    </p>
+  </section>
+
+  <!-- 1-4 ループ処理 -->
+  <section>
+    <h3>1-3 ループ処理 (Loop)</h3>
+    <p><strong>同じ処理を繰り返す</strong>ことができます。</p>
+    <div class="two-col">
+      <div>
+        <span class="label">回数指定 (FOR)</span>
+        <pre><code class="language-plaintext">FOR i = 1 TO 5
+    PRINT i
+END FOR
+
+-- 出力 --
+1
+2
+3
+4
+5</code></pre>
+      </div>
+      <div>
+        <span class="label">条件指定 (WHILE)</span>
+        <pre><code class="language-plaintext">count = 0
+WHILE count < 3
+    PRINT "Hello"
+    count = count + 1
+END WHILE
+
+-- 出力 --
+Hello
+Hello
+Hello</code></pre>
+      </div>
+    </div>
+    <div class="warn-box">
+      <strong>注意: 無限ループ</strong><br>
+      終了条件を忘れると、プログラムが止まらなくなります。<br>
+      → <code>Ctrl + C</code> で強制終了できます。
+    </div>
+  </section>
+
+  <!-- 1-5 組み合わせ -->
+  <section>
+    <h3>組み合わせてみよう</h3>
+    <p>1〜10 の中から偶数だけ出力する</p>
+    <pre><code class="language-plaintext">FOR i = 1 TO 10
+    IF i % 2 == 0 THEN
+        PRINT i
+    END IF
+END FOR
+
+-- 出力 --
+2
+4
+6
+8
+10</code></pre>
+    <p style="font-size:0.8em; color:#657b83">
+      <code>%</code> は「余り」を求める演算子です。<br>
+      <code>i % 2 == 0</code> → i を 2 で割った余りが 0 = 偶数
+    </p>
+  </section>
+</section>
+
+<!-- ============================================================ -->
+<!-- Part 2: プログラミングで気にすること                          -->
+<!-- ============================================================ -->
+<section>
+  <section class="center-content" style="text-align:center">
+    <span class="tag tag-part" style="font-size:1em">Part 2</span>
+    <h2>プログラミングで<br>気にすること</h2>
+    <p style="color:#657b83">実際のコードを書くときの考え方</p>
+  </section>
+
+  <!-- 2-1 変数とデータ型 -->
+  <section>
+    <h3>2-1 変数とデータ型</h3>
+    <p>変数とは「名前付きの箱」。データを入れて後から使えます。</p>
+    <pre><code class="language-plaintext">name = "Alice"        -- 文字列 (String)
+age  = 25             -- 整数   (Integer)
+height = 1.65         -- 小数   (Float)
+isStudent = TRUE      -- 真偽値 (Boolean)</code></pre>
+    <br>
+    <div class="two-col">
+      <div>
+        <span class="label">リスト（配列）</span>
+        <pre><code class="language-plaintext">fruits = ["apple", "banana", "cherry"]
+PRINT fruits[0]  -- "apple"
+PRINT fruits[1]  -- "banana"</code></pre>
+      </div>
+      <div>
+        <span class="label">マップ（辞書）</span>
+        <pre><code class="language-plaintext">user = {
+  "name": "Alice",
+  "age": 25
+}
+PRINT user["name"]  -- "Alice"</code></pre>
+      </div>
+    </div>
+    <p style="font-size:0.75em; color:#657b83; margin-top:0.5em">
+      配列のインデックスは <strong>0</strong> から始まります（0-indexed）
+    </p>
+  </section>
+
+  <!-- 2-2 関数化 -->
+  <section>
+    <h3>2-2 関数化</h3>
+    <p>繰り返す処理を<strong>まとめて名前をつける</strong>仕組みです。</p>
+    <div class="two-col">
+      <div>
+        <span class="label">関数なし（コピペ地獄）</span>
+        <pre><code class="language-plaintext">PRINT "----"
+PRINT "Hello, Alice"
+PRINT "----"
+PRINT "----"
+PRINT "Hello, Bob"
+PRINT "----"</code></pre>
+      </div>
+      <div>
+        <span class="label">関数あり</span>
+        <pre><code class="language-plaintext">FUNCTION greet(name)
+    PRINT "----"
+    PRINT "Hello, " + name
+    PRINT "----"
+END FUNCTION
+
+greet("Alice")
+greet("Bob")</code></pre>
+      </div>
+    </div>
+    <div class="step-box">
+      <strong>関数を作るメリット</strong>
+      <ul style="font-size:0.85em">
+        <li><strong>再利用</strong>: 同じ処理を何度でも呼び出せる</li>
+        <li><strong>可読性</strong>: 処理に名前がついて意図が伝わる</li>
+        <li><strong>修正が楽</strong>: 1か所を直すだけで全体に反映される</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 2-3 引数と戻り値 -->
+  <section>
+    <h3>引数と戻り値</h3>
+    <pre><code class="language-plaintext">FUNCTION add(a, b)     -- a, b が「引数」(入力)
+    result = a + b
+    RETURN result      -- RETURN が「戻り値」(出力)
+END FUNCTION
+
+x = add(3, 4)
+PRINT x               -- 7</code></pre>
+    <div class="two-col">
+      <div style="text-align:center; font-size:0.8em">
+        <br>
+        <div style="border: 2px solid #268bd2; border-radius:8px; padding:1em; display:inline-block">
+          <div>引数: 3, 4</div>
+          <div style="font-size:1.2em; margin:0.2em">↓</div>
+          <div style="font-weight:bold">add()</div>
+          <div style="font-size:1.2em; margin:0.2em">↓</div>
+          <div>戻り値: 7</div>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:0.8em">
+          関数は「ブラックボックス」として考えます。<br><br>
+          入力（引数）を渡すと、<br>
+          処理して結果（戻り値）を返してくれる。<br><br>
+          中身の実装は呼び出し側が知らなくても使える。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2-4 命名規則 -->
+  <section>
+    <h3>2-3 命名規則</h3>
+    <p>変数名・関数名は<strong>意味が伝わる名前</strong>をつけましょう。</p>
+    <div class="two-col">
+      <div>
+        <span class="label bad">悪い例</span>
+        <pre><code class="language-plaintext">x = 25
+y = "Alice"
+z = TRUE
+
+FUNCTION f(a, b)
+    RETURN a + b
+END FUNCTION</code></pre>
+      </div>
+      <div>
+        <span class="label good">良い例</span>
+        <pre><code class="language-plaintext">age = 25
+userName = "Alice"
+isLoggedIn = TRUE
+
+FUNCTION calculateTotal(price, tax)
+    RETURN price + tax
+END FUNCTION</code></pre>
+      </div>
+    </div>
+    <br>
+    <div class="step-box" style="font-size:0.8em">
+      <strong>表記スタイル</strong><br>
+      <code>camelCase</code> → userName, calculateTotal &nbsp;（Go・JavaScript など）<br>
+      <code>snake_case</code> → user_name, calculate_total &nbsp;（Python など）<br>
+      <code>PascalCase</code> → UserName, CalculateTotal &nbsp;（クラス名など）
+    </div>
+  </section>
+
+  <!-- 2-5 コードは誰かが読む -->
+  <section>
+    <h3>コードは「誰かが読むもの」</h3>
+    <br>
+    <blockquote style="font-size:0.9em; border-left: 4px solid #268bd2; padding-left:1em">
+      "Programs must be written for people to read, and only incidentally for machines to execute."
+      <br><small>— Harold Abelson (SICP)</small>
+    </blockquote>
+    <br>
+    <div class="step-box">
+      <ul style="font-size:0.85em">
+        <li>未来の自分が読んで理解できるか？</li>
+        <li>チームメンバーが読んで意図が伝わるか？</li>
+        <li>1つの関数は<strong>1つのことだけ</strong>やる</li>
+        <li>コメントは「何をしているか」ではなく「なぜするか」を書く</li>
+      </ul>
+    </div>
+  </section>
+</section>
+
+<!-- ============================================================ -->
+<!-- Part 3: Git の基礎                                           -->
+<!-- ============================================================ -->
+<section>
+  <section class="center-content" style="text-align:center">
+    <span class="tag tag-git" style="font-size:1em">Part 3</span>
+    <h2>Git の基礎</h2>
+    <p style="color:#657b83">コードの変更履歴を管理する</p>
+  </section>
+
+  <!-- 3-1 Git とは -->
+  <section>
+    <h3>3-1 Git とは</h3>
+    <p><strong>バージョン管理システム</strong>: コードの変更履歴を記録するツール</p>
+    <br>
+    <div class="two-col">
+      <div>
+        <span class="label">Git なし</span>
+        <pre><code class="language-plaintext">project/
+├── main.go
+├── main_backup.go
+├── main_old.go
+├── main_final.go
+└── main_final2.go  ← ?</code></pre>
+        <p class="bad" style="font-size:0.75em">どれが最新かわからない...</p>
+      </div>
+      <div>
+        <span class="label">Git あり</span>
+        <pre><code class="language-plaintext">$ git log
+commit a1b2c3  "APIエンドポイント追加"
+commit d4e5f6  "バグ修正"
+commit g7h8i9  "初期実装"
+
+$ git checkout d4e5f6
+# 過去の状態に戻れる！</code></pre>
+        <p class="good" style="font-size:0.75em">いつでも過去に戻れる</p>
+      </div>
+    </div>
+    <p style="font-size:0.8em; color:#657b83; margin-top:0.4em">
+      Git = ローカルの履歴管理 &nbsp;/&nbsp; GitHub = インターネット上の保管場所
+    </p>
+  </section>
+
+  <!-- 3-2 基本コマンド (1/2) -->
+  <section>
+    <h3>3-2 基本コマンド</h3>
+    <div class="step-box">
+      <strong>Step 1: 変更をステージに追加</strong>
+      <pre><code class="language-bash">git add main.go        # 特定ファイルを追加
+git add .              # すべての変更を追加</code></pre>
+    </div>
+    <div class="step-box">
+      <strong>Step 2: コミット（セーブポイントを作る）</strong>
+      <pre><code class="language-bash">git commit -m "Hello World を追加"</code></pre>
+    </div>
+    <div class="step-box">
+      <strong>Step 3: リモートに送る</strong>
+      <pre><code class="language-bash">git push origin main</code></pre>
+    </div>
+    <div class="step-box">
+      <strong>現在の状態を確認</strong>
+      <pre><code class="language-bash">git status             # 変更されたファイルを確認
+git log --oneline      # コミット履歴を確認</code></pre>
+    </div>
+    <p style="font-size:0.75em; color:#657b83; margin-top:0.4em">
+      <strong>流れ</strong>: ファイルを編集 → <code>add</code> でステージ → <code>commit</code> で記録 → <code>push</code> で共有
+    </p>
+  </section>
+
+  <!-- 3-3 コミットメッセージ -->
+  <section>
+    <h3>良いコミットメッセージ</h3>
+    <div class="two-col">
+      <div>
+        <span class="label bad">悪い例</span>
+        <pre><code class="language-bash">git commit -m "修正"
+git commit -m "変更"
+git commit -m "あああ"
+git commit -m "fix"</code></pre>
+      </div>
+      <div>
+        <span class="label good">良い例</span>
+        <pre><code class="language-bash">git commit -m "feat: ユーザー登録APIを追加"
+git commit -m "fix: ログイン時のバグを修正"
+git commit -m "docs: READMEを更新"
+git commit -m "refactor: 認証処理を関数化"</code></pre>
+      </div>
+    </div>
+    <br>
+    <div class="step-box" style="font-size:0.85em">
+      <strong>よく使うプレフィックス</strong><br>
+      <code>feat:</code> 新機能 &nbsp;/&nbsp;
+      <code>fix:</code> バグ修正 &nbsp;/&nbsp;
+      <code>docs:</code> ドキュメント &nbsp;/&nbsp;
+      <code>refactor:</code> リファクタリング<br>
+      <br>
+      <strong>コツ</strong>: 「このコミットは〇〇を〜する」という文章で書ける粒度がベスト
+    </div>
+  </section>
+
+  <!-- 3-4 ブランチとは -->
+  <section>
+    <h3>3-3 ブランチとは</h3>
+    <p>作業の「分岐」を作る仕組みです。</p>
+    <pre><code class="language-plaintext">main  ─●─────────────────●─── (本番コード)
+            \                 /
+feature  ────●───●───●───●    (開発中の機能)</code></pre>
+    <div class="step-box">
+      <strong>なぜブランチを分けるのか</strong>
+      <ul style="font-size:0.85em">
+        <li><strong>main を守る</strong>: 壊れたコードを本番に混ぜない</li>
+        <li><strong>並行作業</strong>: 複数の機能を同時に開発できる</li>
+        <li><strong>レビューがしやすい</strong>: 変更内容を明確にして確認してもらえる</li>
+        <li><strong>ロールバック</strong>: 問題があれば merge 前に捨てられる</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 3-5 ブランチの操作 (1/2) -->
+  <section>
+    <h3>ブランチの操作: ローカル</h3>
+    <div class="step-box">
+      <strong>ブランチを作って移動</strong>
+      <pre><code class="language-bash">git checkout -b feature/add-login
+# または
+git switch -c feature/add-login</code></pre>
+    </div>
+    <div class="step-box">
+      <strong>ブランチを確認 / 切り替え</strong>
+      <pre><code class="language-bash">git branch             # ブランチ一覧（* が現在のブランチ）
+git checkout main      # main に戻る</code></pre>
+    </div>
+  </section>
+
+  <!-- 3-5 ブランチの操作 (2/2) -->
+  <section>
+    <h3>ブランチの操作: リモート連携</h3>
+    <div class="step-box">
+      <strong>ブランチを push して Pull Request を作る</strong>
+      <pre><code class="language-bash">git push origin feature/add-login
+# → GitHub でPRを作成 → レビュー → merge</code></pre>
+    </div>
+    <div class="step-box">
+      <strong>main の最新を取り込む</strong>
+      <pre><code class="language-bash">git pull origin main</code></pre>
+    </div>
+    <div class="step-box">
+      <strong>作業済みブランチの削除</strong>
+      <pre><code class="language-bash">git branch -d feature/add-login    # ローカル削除
+git push origin --delete feature/add-login  # リモート削除</code></pre>
+    </div>
+  </section>
+
+  <!-- 3-6 GitHub フロー -->
+  <section>
+    <h3>GitHub フロー（よく使われる開発の流れ）</h3>
+    <ol style="font-size:0.85em; line-height:1.8">
+      <li><code>git checkout -b feature/xxx</code> &nbsp;→ ブランチ作成</li>
+      <li>コードを書く</li>
+      <li><code>git add . &amp;&amp; git commit -m "..."</code> &nbsp;→ コミット</li>
+      <li><code>git push origin feature/xxx</code> &nbsp;→ push</li>
+      <li>GitHub で Pull Request を作成</li>
+      <li>レビューを受けて修正</li>
+      <li>Approve されたら <code>main</code> に merge</li>
+      <li><code>git checkout main &amp;&amp; git pull</code> &nbsp;→ 最新に更新</li>
+    </ol>
+    <p style="font-size:0.75em; color:#657b83; margin-top:0.4em">
+      1人開発でもこの流れを習慣にすると、後でチーム開発に入りやすくなります。
+    </p>
+  </section>
+</section>
+
+<!-- ============================================================ -->
+<!-- Part 4: Go 言語の基礎                                        -->
+<!-- ============================================================ -->
+<section>
+  <section class="center-content" style="text-align:center">
+    <span class="tag tag-part" style="font-size:1em">Part 4</span>
+    <h2>Go 言語の基礎</h2>
+    <p style="color:#657b83">シンプルで高速な言語</p>
+  </section>
+
+  <!-- 4-1 Go とは -->
+  <section>
+    <h3>4-1 Go とは</h3>
+    <div class="two-col-wide">
+      <div>
+        <ul style="font-size:0.85em; line-height:2">
+          <li>Google 製（2009年）</li>
+          <li>シンプルな構文</li>
+          <li>コンパイル型・高速</li>
+          <li>並行処理が得意</li>
+          <li>標準ライブラリが充実</li>
+        </ul>
+      </div>
+      <div>
+        <span class="label">使われている場所</span>
+        <ul style="font-size:0.8em; line-height:1.8">
+          <li>Docker / Kubernetes</li>
+          <li>各種 CLI ツール</li>
+          <li>Web API サーバー</li>
+          <li>クラウドインフラ</li>
+        </ul>
+      </div>
+    </div>
+    <br>
+    <div class="step-box" style="font-size:0.8em">
+      <strong>このハンズオンでは</strong><br>
+      標準ライブラリだけを使い、シンプルなプログラムから Web API まで作ります。<br>
+      外部フレームワーク（Gin, Echo）は使いません。
+    </div>
+  </section>
+
+  <!-- 4-2 最初のプログラム -->
+  <section>
+    <h3>4-2 Go プログラムの構成</h3>
+    <pre><code class="language-go">package main          // このファイルが "main" パッケージであることを宣言
+
+import "fmt"          // 標準ライブラリ "fmt" を使用（format の略）
+
+func main() {         // プログラムのエントリーポイント（最初に実行される）
+    fmt.Println("Hello, World!")
+}</code></pre>
+    <br>
+    <div class="step-box">
+      <strong>必須のルール</strong>
+      <ul style="font-size:0.85em">
+        <li>実行可能なプログラムは <code>package main</code> から始まる</li>
+        <li><code>func main()</code> がプログラムの入口</li>
+        <li>import したパッケージは必ず使わないとエラーになる</li>
+      </ul>
+    </div>
+    <pre><code class="language-bash">go run main.go   # ファイルを直接実行
+go build         # バイナリにコンパイル</code></pre>
+  </section>
+
+  <!-- 4-3 変数 -->
+  <section>
+    <h3>4-3 変数の宣言</h3>
+    <pre><code class="language-go">// 方法 1: var キーワード（型を明示）
+var name string = "Alice"
+var age  int    = 25
+
+// 方法 2: := で型推論（最もよく使う）
+name := "Alice"
+age  := 25
+
+// 定数
+const maxRetry = 3</code></pre>
+    <br>
+    <div class="two-col">
+      <div>
+        <span class="label">基本データ型</span>
+        <pre><code class="language-go">int     // 整数
+float64 // 小数
+string  // 文字列
+bool    // true / false</code></pre>
+      </div>
+      <div>
+        <span class="label">複合型</span>
+        <pre><code class="language-go">[]int        // スライス（配列）
+map[string]int // マップ</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4-4 if/for -->
+  <section>
+    <h3>4-4 分岐とループ</h3>
+    <div class="two-col">
+      <div>
+        <span class="label">if / else</span>
+        <pre><code class="language-go">if score >= 90 {
+    fmt.Println("A")
+} else if score >= 70 {
+    fmt.Println("B")
+} else {
+    fmt.Println("C")
+}</code></pre>
+      </div>
+      <div>
+        <span class="label">for ループ（Go に while はない）</span>
+        <pre><code class="language-go">// 回数指定
+for i := 1; i <= 10; i++ {
+    fmt.Println(i)
+}
+
+// 条件指定（while 相当）
+for count < 3 {
+    count++
+}</code></pre>
+      </div>
+    </div>
+    <br>
+    <div class="step-box" style="font-size:0.85em">
+      <strong>Go の特徴</strong>: <code>if</code> / <code>for</code> の条件式に <code>()</code> は不要。<br>
+      <code>{}</code> は必須です（省略できません）。
+    </div>
+  </section>
+
+  <!-- 4-5 関数 -->
+  <section>
+    <h3>4-5 関数の定義</h3>
+    <pre><code class="language-go">// 引数あり・戻り値あり
+func add(a int, b int) int {
+    return a + b
+}
+
+// 複数の戻り値（Go の特徴）
+func divide(a, b int) (int, error) {
+    if b == 0 {
+        return 0, fmt.Errorf("0 で割ることはできません")
+    }
+    return a / b, nil
+}
+
+func main() {
+    result := add(3, 4)
+    fmt.Println(result) // 7
+}</code></pre>
+    <p style="font-size:0.8em; color:#657b83">
+      今回のハンズオンでは error の扱いは省略します。<br>
+      まずは「引数」「戻り値」「呼び出し」の感覚をつかみましょう。
+    </p>
+  </section>
+</section>
+
+<!-- ============================================================ -->
+<!-- Part 5: ハンズオン演習                                        -->
+<!-- ============================================================ -->
+<section>
+  <section class="center-content" style="text-align:center">
+    <span class="tag tag-hands" style="font-size:1em">Part 5</span>
+    <h2>ハンズオン演習</h2>
+    <p style="color:#657b83">実際にコードを書いてみよう</p>
+  </section>
+
+  <!-- 5-1 Hello World -->
+  <section>
+    <h3><span class="tag tag-hands">01</span> Hello, World!</h3>
+    <p><code>01_hello_world/main.go</code></p>
+    <pre><code class="language-go">package main
+
+import "fmt"
+
+func main() {
+    fmt.Println("Hello, World!")
+}</code></pre>
+    <div class="step-box">
+      <strong>やってみよう</strong>
+      <ol style="font-size:0.85em">
+        <li><code>cd 01_hello_world</code> でディレクトリに移動</li>
+        <li><code>go run main.go</code> を実行</li>
+        <li><code>Hello, World!</code> と表示されたら成功！</li>
+        <li>メッセージを自分の名前に変えて実行してみよう</li>
+      </ol>
+    </div>
+    <p style="font-size:0.8em; color:#657b83">
+      <code>fmt.Println()</code>: 引数を画面に出力して改行する関数
+    </p>
+  </section>
+
+  <!-- 5-2 Loop Numbers -->
+  <section>
+    <h3><span class="tag tag-hands">02</span> 数字のループ</h3>
+    <p><code>02_loop_numbers/main.go</code></p>
+    <div class="two-col">
+      <div>
+        <pre><code class="language-go">func main() {
+    for i := 1; i <= 10; i++ {
+        fmt.Println(i)
+    }
+}</code></pre>
+        <span class="label" style="margin-top:0.4em">for の構造</span>
+        <pre><code class="language-plaintext">for 初期化; 条件; 後処理 {
+    // 処理
+}
+i := 1   → 1 から始める
+i <= 10  → 10 以下の間繰り返す
+i++      → 毎回 1 増やす</code></pre>
+      </div>
+      <div>
+        <div class="step-box">
+          <strong>やってみよう</strong>
+          <ol style="font-size:0.9em">
+            <li><code>go run main.go</code> を実行</li>
+            <li>1〜20 に変えてみよう</li>
+            <li>逆順（10→1）に変えてみよう</li>
+          </ol>
+        </div>
+        <p style="font-size:0.65em; color:#657b83; margin-top:0.5em">
+          ※ファイル先頭の <code>package main</code> / <code>import "fmt"</code> は省略しています
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5-3 Loop Function -->
+  <section>
+    <h3><span class="tag tag-hands">03</span> ループを関数化する</h3>
+    <p><code>03_loop_function/main.go</code></p>
+    <div class="two-col">
+      <div>
+        <pre><code class="language-go">func printNumbers(from, to int) {
+    for i := from; i <= to; i++ {
+        fmt.Println(i)
+    }
+}
+
+func main() {
+    printNumbers(1, 10)
+}</code></pre>
+      </div>
+      <div>
+        <div class="step-box">
+          <strong>02 との違い</strong>
+          <ul style="font-size:0.9em">
+            <li>ループ処理を <code>printNumbers</code> 関数に切り出した</li>
+            <li><code>from, to int</code> → 同じ型の引数はまとめて書ける</li>
+            <li><code>main()</code> がスッキリして意図が一目でわかる</li>
+          </ul>
+        </div>
+        <div class="step-box" style="margin-top:0.4em">
+          <strong>やってみよう</strong>
+          <ol style="font-size:0.9em">
+            <li><code>printNumbers(5, 15)</code> に変えてみよう</li>
+            <li>2 回呼び出して違う範囲を表示してみよう</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5-4 Even Odd -->
+  <section>
+    <h3><span class="tag tag-hands">04</span> 偶数・奇数の判定</h3>
+    <p><code>04_even_odd/main.go</code></p>
+    <div class="two-col">
+      <div>
+        <pre><code class="language-go">func isEven(n int) bool {
+    return n%2 == 0
+}
+
+func main() {
+    fmt.Println(isEven(4))  // true
+    fmt.Println(isEven(7))  // false
+    fmt.Println(isEven(10)) // true
+    fmt.Println(isEven(13)) // false
+}</code></pre>
+      </div>
+      <div>
+        <div class="step-box">
+          <strong>ポイント</strong>
+          <ul style="font-size:0.9em">
+            <li><code>%</code> → 余りを計算する演算子</li>
+            <li><code>n%2 == 0</code> → 余りが 0 なら偶数</li>
+            <li>戻り値の型は <code>bool</code>（true / false）</li>
+            <li><code>return</code> で結果を返す</li>
+          </ul>
+        </div>
+        <div class="step-box" style="margin-top:0.4em">
+          <strong>やってみよう</strong>
+          <ol style="font-size:0.9em">
+            <li>実行して結果を確認</li>
+            <li>3 の倍数を判定する <code>isMultipleOf3</code> 関数を追加してみよう</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5-5 Even Numbers -->
+  <section>
+    <h3><span class="tag tag-hands">05</span> 偶数の一覧表示</h3>
+    <p><code>05_even_numbers/main.go</code></p>
+    <div class="two-col">
+      <div>
+        <pre><code class="language-go">func isEven(n int) bool {
+    return n%2 == 0
+}
+
+func main() {
+    for i := 1; i <= 100; i++ {
+        if isEven(i) {
+            fmt.Println(i)
+        }
+    }
+}</code></pre>
+      </div>
+      <div>
+        <div class="step-box">
+          <strong>ループ + 条件分岐 + 関数呼び出し</strong>
+          <ul style="font-size:0.9em">
+            <li><code>04</code> の <code>isEven</code> をそのまま再利用</li>
+            <li><code>if isEven(i)</code> → 戻り値（bool）を条件に使える</li>
+          </ul>
+        </div>
+        <div class="step-box" style="margin-top:0.4em">
+          <strong>やってみよう</strong>
+          <ol style="font-size:0.9em">
+            <li>奇数だけ表示してみよう（<code>!isEven(i)</code>）</li>
+            <li>3 の倍数だけを 1〜50 で表示してみよう</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5-6 FizzBuzz -->
+  <section>
+    <h3><span class="tag tag-hands">06</span> FizzBuzz</h3>
+    <p><code>06_fizzbuzz/main.go</code></p>
+    <div class="two-col">
+      <div>
+        <span class="label">fizzbuzz 関数</span>
+        <pre><code class="language-go">func fizzbuzz(n int) string {
+    switch {
+    case n%15 == 0:
+        return "FizzBuzz"
+    case n%3 == 0:
+        return "Fizz"
+    case n%5 == 0:
+        return "Buzz"
+    default:
+        return fmt.Sprintf("%d", n)
+    }
+}</code></pre>
+      </div>
+      <div>
+        <span class="label">main 関数</span>
+        <pre><code class="language-go">func main() {
+    for i := 1; i <= 100; i++ {
+        fmt.Println(fizzbuzz(i))
+    }
+}</code></pre>
+        <div class="step-box" style="margin-top:0.4em; font-size:0.85em">
+          <strong>ルール</strong>
+          <ul style="font-size:0.9em">
+            <li>3 と 5 の公倍数 → "FizzBuzz"</li>
+            <li>3 の倍数 → "Fizz"</li>
+            <li>5 の倍数 → "Buzz"</li>
+            <li>それ以外 → 数字そのまま</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h3>FizzBuzz のロジック解説</h3>
+    <div class="two-col">
+      <div>
+        <div class="step-box">
+          <strong>なぜ <code>n%15 == 0</code> を最初に判定するか</strong><br>
+          <code>15 = 3 × 5</code> なので、15 の倍数は 3 の倍数でも 5 の倍数でもある。<br>
+          後に判定すると "Fizz" か "Buzz" だけになってしまう。
+        </div>
+        <div class="step-box" style="margin-top:0.4em">
+          <strong>switch 文</strong>: 複数の <code>if/else if</code> をスッキリ書ける構文<br>
+          <ul style="font-size:0.9em">
+            <li><code>case 条件:</code> → <code>else if 条件</code> に相当</li>
+            <li><code>default:</code> → <code>else</code> に相当</li>
+            <li>最初に一致した case だけ実行される</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <div class="step-box">
+          <strong>fmt.Sprintf("%d", n)</strong>: 数値を文字列に変換<br>
+          <code>%d</code> = 整数のプレースホルダー<br>
+          例: <code>Sprintf("%d", 42)</code> → <code>"42"</code>
+        </div>
+        <div class="step-box" style="margin-top:0.4em">
+          <strong>やってみよう</strong>
+          <ol style="font-size:0.9em">
+            <li>実行して 1〜100 の出力を確認しよう</li>
+            <li>7 の倍数に "Boom" を追加してみよう</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5-7 API -->
+  <section>
+    <h3><span class="tag tag-hands">07</span> REST API を作る</h3>
+    <p><code>07_api_hello_world/main.go</code></p>
+    <pre><code class="language-go">package main
+
+import (
+    "fmt"
+    "net/http"
+)
+
+func helloHandler(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Content-Type", "application/json")
+    fmt.Fprintf(w, `{"message": "Hello, World!"}`)
+}
+
+func main() {
+    http.HandleFunc("/hello", corsMiddleware(helloHandler))
+    fmt.Println("サーバーを起動しました: http://localhost:8888")
+    http.ListenAndServe(":8888", nil)
+}</code></pre>
+    <p style="font-size:0.75em; color:#657b83">（corsMiddleware は省略して表示）</p>
+  </section>
+
+  <section>
+    <h3>HTTP / API の仕組み</h3>
+    <pre><code class="language-plaintext">    ブラウザ / curl                   Go サーバー
+    ─────────────                   ────────────
+         │                               │
+         │  GET /hello ────────────────→ │
+         │                               │ helloHandler を呼ぶ
+         │  {"message":"Hello, World!"} │
+         │ ←──────────────────────────── │
+         │                               │</code></pre>
+    <div class="two-col">
+      <div>
+        <span class="label">サーバーの起動</span>
+        <pre><code class="language-bash">go run main.go</code></pre>
+      </div>
+      <div>
+        <span class="label">アクセス確認</span>
+        <pre><code class="language-bash">curl http://localhost:8888/hello
+# または ブラウザで
+# index.html を開く</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h3>API コードの解説</h3>
+    <pre><code class="language-go">// URL パスとハンドラーを紐付ける
+http.HandleFunc("/hello", corsMiddleware(helloHandler))
+
+// ポート 8888 でサーバーを起動（ブロッキング）
+http.ListenAndServe(":8888", nil)</code></pre>
+    <pre><code class="language-go">// ハンドラー関数: リクエストが来るたびに呼ばれる
+func helloHandler(w http.ResponseWriter, r *http.Request) {
+    // w = レスポンスを書き込むオブジェクト
+    // r = クライアントからのリクエスト情報
+    w.Header().Set("Content-Type", "application/json")
+    fmt.Fprintf(w, `{"message": "Hello, World!"}`)
+}</code></pre>
+    <div class="step-box">
+      <strong>やってみよう</strong>
+      <ol style="font-size:0.85em">
+        <li><code>go run main.go</code> でサーバーを起動</li>
+        <li><code>index.html</code> をブラウザで開いてボタンを押す</li>
+        <li>メッセージを変えてみよう（例: 自分の名前を返す）</li>
+        <li>新しいエンドポイント <code>/bye</code> を追加してみよう</li>
+      </ol>
+    </div>
+  </section>
+</section>
+
+<!-- ============================================================ -->
+<!-- Part 6: まとめ                                               -->
+<!-- ============================================================ -->
+<section>
+  <section class="center-content" style="text-align:center">
+    <span class="tag tag-part" style="font-size:1em">Part 6</span>
+    <h2>まとめ</h2>
+  </section>
+
+  <section>
+    <h3>今日学んだこと</h3>
+    <div class="two-col">
+      <div>
+        <span class="label">プログラミング基礎</span>
+        <ul style="font-size:0.8em; line-height:1.8">
+          <li>逐次・分岐・ループ</li>
+          <li>変数とデータ型</li>
+          <li>関数化の重要性</li>
+          <li>命名規則</li>
+        </ul>
+        <span class="label" style="margin-top:0.5em">Git</span>
+        <ul style="font-size:0.8em; line-height:1.8">
+          <li>add / commit / push</li>
+          <li>ブランチとその役割</li>
+          <li>Pull Request のフロー</li>
+        </ul>
+      </div>
+      <div>
+        <span class="label">Go 言語</span>
+        <ul style="font-size:0.8em; line-height:1.8">
+          <li><code>package main</code> / <code>func main()</code></li>
+          <li><code>fmt.Println</code> で出力</li>
+          <li><code>for</code> ループ</li>
+          <li><code>if / else</code> 分岐</li>
+          <li><code>switch</code> 文</li>
+          <li>関数の定義と呼び出し</li>
+          <li><code>net/http</code> で API サーバー</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h3>次のステップ</h3>
+    <div class="step-box" style="margin-bottom:0.5em">
+      <strong>Go をもっと学ぶ</strong>
+      <ul style="font-size:0.85em">
+        <li>エラーハンドリング（<code>error</code> 型）</li>
+        <li>構造体（<code>struct</code>）とメソッド</li>
+        <li>インターフェース</li>
+        <li>ゴルーチン・チャネル（並行処理）</li>
+        <li>テストの書き方（<code>testing</code> パッケージ）</li>
+      </ul>
+    </div>
+    <div class="step-box" style="margin-bottom:0.5em">
+      <strong>Web API をもっと学ぶ</strong>
+      <ul style="font-size:0.85em">
+        <li>JSON のエンコード/デコード（<code>encoding/json</code>）</li>
+        <li>POST / PUT / DELETE メソッドの実装</li>
+        <li>データベース連携（<code>database/sql</code>）</li>
+      </ul>
+    </div>
+    <div class="step-box">
+      <strong>参考リソース</strong>
+      <ul style="font-size:0.85em">
+        <li>A Tour of Go: <code>go.dev/tour</code></li>
+        <li>Go by Example: <code>gobyexample.com</code></li>
+        <li>このリポジトリ: <code>github.com/polyacetal/go-hands-on</code></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="center-content" style="text-align:center">
+    <h2>お疲れ様でした！</h2>
+    <br>
+    <p style="font-size:1.2em">質問はありますか？</p>
+    <br>
+    <p style="font-size:0.8em; color:#657b83">
+      今日書いたコードを Git で管理して、<br>
+      GitHub に push してみましょう。
+    </p>
+  </section>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/highlight.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/notes/notes.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    slideNumber: 'c/t',
+    transition: 'slide',
+    transitionSpeed: 'fast',
+    controls: true,
+    progress: true,
+    center: false,
+    width: 1200,
+    height: 700,
+    plugins: [ RevealHighlight, RevealNotes ]
+  });
+</script>
+</body>
+</html>
