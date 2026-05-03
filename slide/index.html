@@ -806,35 +806,33 @@ func main() {
   <section>
     <h3><span class="tag tag-hands">02</span> 数字のループ</h3>
     <p><code>02_loop_numbers/main.go</code></p>
-    <pre><code class="language-go">package main
-
-import "fmt"
-
-func main() {
+    <div class="two-col">
+      <div>
+        <pre><code class="language-go">func main() {
     for i := 1; i <= 10; i++ {
         fmt.Println(i)
     }
 }</code></pre>
-    <div class="two-col">
-      <div>
-        <span class="label">for の構造</span>
+        <span class="label" style="margin-top:0.4em">for の構造</span>
         <pre><code class="language-plaintext">for 初期化; 条件; 後処理 {
     // 処理
 }
-
-i := 1   → i を 1 から始める
-i <= 10  → i が 10 以下の間繰り返す
-i++      → 毎回 i を 1 増やす</code></pre>
+i := 1   → 1 から始める
+i <= 10  → 10 以下の間繰り返す
+i++      → 毎回 1 増やす</code></pre>
       </div>
       <div>
-        <div class="step-box" style="font-size:0.8em">
+        <div class="step-box">
           <strong>やってみよう</strong>
-          <ol>
+          <ol style="font-size:0.9em">
             <li><code>go run main.go</code> を実行</li>
             <li>1〜20 に変えてみよう</li>
             <li>逆順（10→1）に変えてみよう</li>
           </ol>
         </div>
+        <p style="font-size:0.65em; color:#657b83; margin-top:0.5em">
+          ※ファイル先頭の <code>package main</code> / <code>import "fmt"</code> は省略しています
+        </p>
       </div>
     </div>
   </section>
@@ -843,11 +841,9 @@ i++      → 毎回 i を 1 増やす</code></pre>
   <section>
     <h3><span class="tag tag-hands">03</span> ループを関数化する</h3>
     <p><code>03_loop_function/main.go</code></p>
-    <pre><code class="language-go">package main
-
-import "fmt"
-
-func printNumbers(from, to int) {
+    <div class="two-col">
+      <div>
+        <pre><code class="language-go">func printNumbers(from, to int) {
     for i := from; i <= to; i++ {
         fmt.Println(i)
     }
@@ -856,19 +852,24 @@ func printNumbers(from, to int) {
 func main() {
     printNumbers(1, 10)
 }</code></pre>
-    <div class="step-box">
-      <strong>02 との違い</strong>: ループ処理を <code>printNumbers</code> 関数に切り出した。<br>
-      <ul style="font-size:0.85em">
-        <li><code>from, to int</code> → 同じ型の引数はまとめて書ける</li>
-        <li><code>main()</code> がスッキリして「何をしているか」が一目でわかる</li>
-      </ul>
-    </div>
-    <div class="step-box">
-      <strong>やってみよう</strong>
-      <ol style="font-size:0.85em">
-        <li><code>printNumbers(5, 15)</code> に変えてみよう</li>
-        <li><code>printNumbers</code> を 2 回呼び出して違う範囲を表示してみよう</li>
-      </ol>
+      </div>
+      <div>
+        <div class="step-box">
+          <strong>02 との違い</strong>
+          <ul style="font-size:0.9em">
+            <li>ループ処理を <code>printNumbers</code> 関数に切り出した</li>
+            <li><code>from, to int</code> → 同じ型の引数はまとめて書ける</li>
+            <li><code>main()</code> がスッキリして意図が一目でわかる</li>
+          </ul>
+        </div>
+        <div class="step-box" style="margin-top:0.4em">
+          <strong>やってみよう</strong>
+          <ol style="font-size:0.9em">
+            <li><code>printNumbers(5, 15)</code> に変えてみよう</li>
+            <li>2 回呼び出して違う範囲を表示してみよう</li>
+          </ol>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -876,11 +877,9 @@ func main() {
   <section>
     <h3><span class="tag tag-hands">04</span> 偶数・奇数の判定</h3>
     <p><code>04_even_odd/main.go</code></p>
-    <pre><code class="language-go">package main
-
-import "fmt"
-
-func isEven(n int) bool {
+    <div class="two-col">
+      <div>
+        <pre><code class="language-go">func isEven(n int) bool {
     return n%2 == 0
 }
 
@@ -890,20 +889,20 @@ func main() {
     fmt.Println(isEven(10)) // true
     fmt.Println(isEven(13)) // false
 }</code></pre>
-    <div class="two-col">
-      <div>
-        <span class="label">ポイント</span>
-        <ul style="font-size:0.8em">
-          <li><code>%</code> → 余りを計算</li>
-          <li><code>n%2 == 0</code> → 余りが 0 なら偶数</li>
-          <li>戻り値の型は <code>bool</code></li>
-          <li><code>return</code> で結果を返す</li>
-        </ul>
       </div>
       <div>
-        <div class="step-box" style="font-size:0.8em">
+        <div class="step-box">
+          <strong>ポイント</strong>
+          <ul style="font-size:0.9em">
+            <li><code>%</code> → 余りを計算する演算子</li>
+            <li><code>n%2 == 0</code> → 余りが 0 なら偶数</li>
+            <li>戻り値の型は <code>bool</code>（true / false）</li>
+            <li><code>return</code> で結果を返す</li>
+          </ul>
+        </div>
+        <div class="step-box" style="margin-top:0.4em">
           <strong>やってみよう</strong>
-          <ol>
+          <ol style="font-size:0.9em">
             <li>実行して結果を確認</li>
             <li>3 の倍数を判定する <code>isMultipleOf3</code> 関数を追加してみよう</li>
           </ol>
@@ -916,11 +915,9 @@ func main() {
   <section>
     <h3><span class="tag tag-hands">05</span> 偶数の一覧表示</h3>
     <p><code>05_even_numbers/main.go</code></p>
-    <pre><code class="language-go">package main
-
-import "fmt"
-
-func isEven(n int) bool {
+    <div class="two-col">
+      <div>
+        <pre><code class="language-go">func isEven(n int) bool {
     return n%2 == 0
 }
 
@@ -931,19 +928,23 @@ func main() {
         }
     }
 }</code></pre>
-    <div class="step-box">
-      <strong>ループ + 条件分岐 + 関数呼び出し の組み合わせ</strong><br>
-      <ul style="font-size:0.85em">
-        <li><code>04</code> で作った <code>isEven</code> をそのまま再利用している</li>
-        <li><code>if isEven(i)</code> → 関数の戻り値（bool）を if の条件に使える</li>
-      </ul>
-    </div>
-    <div class="step-box">
-      <strong>やってみよう</strong>
-      <ol style="font-size:0.85em">
-        <li>奇数だけを表示するように変えてみよう（<code>!</code> を使う: <code>!isEven(i)</code>）</li>
-        <li>3 の倍数だけを 1〜50 で表示してみよう</li>
-      </ol>
+      </div>
+      <div>
+        <div class="step-box">
+          <strong>ループ + 条件分岐 + 関数呼び出し</strong>
+          <ul style="font-size:0.9em">
+            <li><code>04</code> の <code>isEven</code> をそのまま再利用</li>
+            <li><code>if isEven(i)</code> → 戻り値（bool）を条件に使える</li>
+          </ul>
+        </div>
+        <div class="step-box" style="margin-top:0.4em">
+          <strong>やってみよう</strong>
+          <ol style="font-size:0.9em">
+            <li>奇数だけ表示してみよう（<code>!isEven(i)</code>）</li>
+            <li>3 の倍数だけを 1〜50 で表示してみよう</li>
+          </ol>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -989,32 +990,36 @@ func main() {
 
   <section>
     <h3>FizzBuzz のロジック解説</h3>
-    <div class="step-box">
-      <strong>なぜ <code>n%15 == 0</code> を最初に判定するか</strong><br>
-      <code>15 = 3 × 5</code> なので、15 の倍数は 3 の倍数でも 5 の倍数でもある。<br>
-      後に判定すると "Fizz" か "Buzz" だけになってしまう。
-    </div>
-    <div class="step-box">
-      <strong>switch 文</strong>: 複数の <code>if/else if</code> をスッキリ書ける構文
-      <pre><code class="language-go">switch {
-case 条件1:   // if 条件1 に相当
-    ...
-case 条件2:   // else if 条件2 に相当
-    ...
-default:      // else に相当
-    ...
-}</code></pre>
-    </div>
-    <div class="step-box">
-      <strong>fmt.Sprintf("%d", n)</strong>: 数値 n を文字列に変換する<br>
-      <code>%d</code> = 整数のプレースホルダー &nbsp;（例: <code>Sprintf("%d", 42)</code> → <code>"42"</code>）
-    </div>
-    <div class="step-box">
-      <strong>やってみよう</strong>
-      <ol style="font-size:0.85em">
-        <li>実行して 1〜100 の出力を確認しよう</li>
-        <li>7 の倍数に "Boom" を追加してみよう</li>
-      </ol>
+    <div class="two-col">
+      <div>
+        <div class="step-box">
+          <strong>なぜ <code>n%15 == 0</code> を最初に判定するか</strong><br>
+          <code>15 = 3 × 5</code> なので、15 の倍数は 3 の倍数でも 5 の倍数でもある。<br>
+          後に判定すると "Fizz" か "Buzz" だけになってしまう。
+        </div>
+        <div class="step-box" style="margin-top:0.4em">
+          <strong>switch 文</strong>: 複数の <code>if/else if</code> をスッキリ書ける構文<br>
+          <ul style="font-size:0.9em">
+            <li><code>case 条件:</code> → <code>else if 条件</code> に相当</li>
+            <li><code>default:</code> → <code>else</code> に相当</li>
+            <li>最初に一致した case だけ実行される</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <div class="step-box">
+          <strong>fmt.Sprintf("%d", n)</strong>: 数値を文字列に変換<br>
+          <code>%d</code> = 整数のプレースホルダー<br>
+          例: <code>Sprintf("%d", 42)</code> → <code>"42"</code>
+        </div>
+        <div class="step-box" style="margin-top:0.4em">
+          <strong>やってみよう</strong>
+          <ol style="font-size:0.9em">
+            <li>実行して 1〜100 の出力を確認しよう</li>
+            <li>7 の倍数に "Boom" を追加してみよう</li>
+          </ol>
+        </div>
+      </div>
     </div>
   </section>
 
